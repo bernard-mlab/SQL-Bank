@@ -14,7 +14,7 @@ startEndTime AS (
   FROM meetings
 )
 
--------------------------------------------------
+------------------------------------------------- calculate max number of rooms occupied
 SELECT 
   SUM(SUM(increment)) OVER (ORDER BY timing) AS rooms
 
