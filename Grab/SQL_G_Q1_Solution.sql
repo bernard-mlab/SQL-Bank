@@ -9,7 +9,7 @@ host_scores AS (
       WHEN host_goals < guest_goals THEN 0
     END AS scores
 
-  FROM `bernard-mlab.sandbox.matches`
+  FROM matches
 ),
 
 ------------------------------------------------- calculate guest scores
@@ -22,7 +22,7 @@ guest_scores AS (
       WHEN guest_goals < host_goals THEN 0
     END AS scores
 
-  FROM `bernard-mlab.sandbox.matches`
+  FROM matches
 )
 
 ------------------------------------------------- aggregate & join to team name
@@ -40,7 +40,7 @@ FROM (
   FROM guest_scores
 ) m
 
-RIGHT JOIN `bernard-mlab.sandbox.teams` t
+RIGHT JOIN teams t
   ON m.team_id = t.team_id
 
 GROUP BY 1,2
