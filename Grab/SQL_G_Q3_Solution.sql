@@ -15,20 +15,14 @@ allCalls AS (
 )
 
 ------------------------------------------------- get clients who talked for at least 10mins in total
-SELECT  
-  name
-FROM (
-  SELECT
-    p.name
-    ,SUM(c.duration) AS callDuration
+SELECT
+  p.name
 
-  FROM allCalls c
-  LEFT JOIN phones p 
-    ON c.phoneNo = p.phone_number
+FROM allCalls c
+LEFT JOIN phones p 
+  ON c.phoneNo = p.phone_number
 
-  GROUP BY 1
-)
-
-WHERE callDuration >= 10
+GROUP BY 1
+HAVING callDuration >= 10
 ORDER BY 1
 
