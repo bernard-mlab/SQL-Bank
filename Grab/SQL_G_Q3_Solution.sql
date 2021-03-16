@@ -23,6 +23,6 @@ LEFT JOIN phones p
   ON c.phoneNo = p.phone_number
 
 GROUP BY 1
-HAVING callDuration >= 10
+HAVING SUM(c.duration) >= 10
 ORDER BY 1
 
