@@ -1,10 +1,10 @@
 WITH
 ------------------------------------------------- putting start and end time in a same column
 startEndTime AS (
-  SELECT 
+  SELECT
     PARSE_TIME("%H:%M", start_time) AS timing
     ,1 AS increment                            -- +1 to room when meeting starts
-  FROM .meetings
+  FROM meetings
 
   UNION ALL
 
@@ -15,7 +15,7 @@ startEndTime AS (
 )
 
 ------------------------------------------------- calculate max number of rooms occupied
-SELECT 
+SELECT
   SUM(SUM(increment)) OVER (ORDER BY timing) AS rooms
 
 FROM startEndTime
