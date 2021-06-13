@@ -1,7 +1,7 @@
 WITH
 ------------------------------------------------- putting caller and callee call duration in a same column
 allCalls AS (
-  SELECT 
+  SELECT
     caller AS phoneNo
     ,duration AS duration
   FROM calls
@@ -19,10 +19,9 @@ SELECT
   p.name
 
 FROM allCalls c
-LEFT JOIN phones p 
+LEFT JOIN phones p
   ON c.phoneNo = p.phone_number
 
 GROUP BY 1
 HAVING SUM(c.duration) >= 10
 ORDER BY 1
-
