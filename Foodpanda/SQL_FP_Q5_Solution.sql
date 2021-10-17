@@ -3,38 +3,27 @@ Q5. What’s the overall conversion rate for transactions by Device Category and
 -- conversions refers to sessions that has eventAction, 'transaction'
 */
 
--- all sessions by device and operating system
-WITH all_session AS (
+-- all sessions and trnansaction info by device and operating system
+WITH sessions_txn AS (
   SELECT
+    fullvisitorid,
+    visitid,
     deviceCategory,
     operatingSystem,
-    COUNT(DISTINCT CONCAT(fullvisitorid, visitid)) AS total_sessions
-  FROM
-    `dhh-analytics-hiringspace.GoogleAnalyticsSample.ga_sessions_export`
-  GROUP BY 1, 2
-),
-
--- all sessions with eventAction 'transaction'
-transaction_session AS (
-  SELECT
-    deviceCategory,
-    operatingSystem,
-    COUNT(DISTINCT CONCAT(fullvisitorid, visitId)) AS sessions_with_transaction
+    MAX(IF(hit.eventAction = 'transaction', 1, 0)) AS session_with_transaction
   FROM
     `dhh-analytics-hiringspace.GoogleAnalyticsSample.ga_sessions_export`, UNNEST(hit) AS hit
-  WHERE
-    hit.eventAction = 'transaction'
-  GROUP BY 1, 2
+  GROUP BY 1, 2, 3, 4
 )
 
 -- output
 SELECT
-  s.deviceCategory,
-  s.operatingSystem,
-  s.total_sessions,
-  st.sessions_with_transaction,
-  ROUND(st.sessions_with_transaction / s.total_sessions, 4) AS conversion_rate
+  deviceCategory,
+  operatingSystem,
+  COUNT(DISTINCT CONCAT(fullvisitorid, visitid)) AS total_sessions,
+  SUM(session_with_transaction) AS total_transactions,
+  ROUND(SUM(session_with_transaction) / COUNT(DISTINCT CONCAT(fullvisitorid, visitid)) * 100, 2) AS conversion_rate
 FROM
-  all_session s
-  LEFT JOIN transaction_session st ON (s.deviceCategory, s.operatingSystem) = (st.deviceCategory, st.operatingSystem)
+  sessions_txn
+GROUP BY 1, 2
 ORDER BY 1, 2

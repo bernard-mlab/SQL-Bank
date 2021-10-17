@@ -9,3 +9,4 @@ SELECT
 FROM
   `dhh-analytics-hiringspace.GoogleAnalyticsSample.ga_sessions_export`
 GROUP BY 1
+ORDER BY 2 DESC
